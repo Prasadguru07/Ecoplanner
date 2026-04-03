@@ -18,8 +18,4 @@ python-dotenv>=1.0.0             # Read OXLO_API_KEY from .env file
  
 # ── Energy Simulation (optional) ──────────────────────────────────────────────
 # If not installed, EcoPlanner falls back to the built-in ISO 13790 model
-<<<<<<< HEAD
-pybuildingenergy>=0.3.0          # Advanced building energy simulation engine
-=======
-pybuildingenergy>=0.3.0          # Advanced building energy simulation engine
->>>>>>> eba7c90b414c1916b52f919a941acc3ef2cc817b
+
