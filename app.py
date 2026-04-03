@@ -687,7 +687,7 @@ with st.sidebar:
     eco_quotes = [
         "\"The greatest threat to our planet is the belief that someone else will save it.\" - Robert Swan",
         "\"Design with nature, not against it.\" - Frank Lloyd Wright",
-        "\"Sustainable building is not a luxury—it's a necessity.\" - Green Builder",
+        "\"Sustainable building is not a luxury... it's a necessity.\" - Green Builder",
         "\"Every building is a vote for the kind of world we want to live in.\" - Unknown",
         "\"Energy efficiency: the first fuel of sustainability.\" - IEA",
         "\"Smart design today, living well tomorrow.\" - EcoPlanner",
