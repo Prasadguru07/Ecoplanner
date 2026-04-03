@@ -862,8 +862,7 @@ if run_analysis:
     # ── 2. AI material recommendations ────────────────────────────────────────
     if not api_key:
         st.warning(
-            "🔑 No Oxlo.ai API key provided. Energy analysis is complete below. "
-            "Add your API key in the sidebar to unlock AI material recommendations."
+            "🔑 No Oxlo.ai API key provided. Energy analysis is complete below."
         )
         st.session_state["ai_result"] = None
     else:

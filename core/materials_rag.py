@@ -32,10 +32,19 @@ _MODULE_DIR = Path(__file__).parent
 _DATA_DIR = _MODULE_DIR.parent / "data"
 MATERIALS_CSV_PATH = _DATA_DIR / "materials.csv"
 
-# ── Oxlo.ai defaults ──────────────────────────────────────────────────────────
-OXLO_BASE_URL = os.getenv("OXLO_BASE_URL", "https://api.oxlo.ai/v1")
-OXLO_API_KEY = os.getenv("OXLO_API_KEY", "")
-OXLO_MODEL = os.getenv("OXLO_MODEL", "llama-3.3-70b")
+# ── Oxlo.ai defaults (with Streamlit Cloud support) ───────────────────────────
+# Try Streamlit secrets first (for Streamlit Cloud), then fall back to .env
+def _get_secret(key: str, default: str = "") -> str:
+    """Get secret from Streamlit or environment."""
+    try:
+        import streamlit as st
+        return st.secrets.get(key, os.getenv(key, default))
+    except (ImportError, AttributeError, RuntimeError):
+        return os.getenv(key, default)
+
+OXLO_BASE_URL = _get_secret("OXLO_BASE_URL", "https://api.oxlo.ai/v1")
+OXLO_API_KEY = _get_secret("OXLO_API_KEY", "")
+OXLO_MODEL = _get_secret("OXLO_MODEL", "llama-3.3-70b")
 
 # Baseline reference materials (must match CSV Material_Name exactly)
 BASELINE_MATERIALS = {
