@@ -1,0 +1,25 @@
+Material_Name,Category,Embodied_Carbon,Thermal_Conductivity,Durability_Years,Description
+Hempcrete,Wall Insulation,43.0,0.12,50,Bio-composite of hemp hurds and lime binder; excellent moisture regulation and carbon-sequestering properties
+Cross-Laminated Timber (CLT),Structural,115.0,0.13,80,Engineered wood panels with high structural strength; stores biogenic carbon throughout lifespan
+Recycled Steel,Structural,370.0,50.0,100,Steel produced from 100% scrap metal; reduces primary steel embodied carbon by up to 75%
+Rammed Earth,Wall System,24.0,0.70,200,Compacted natural subsoil; near-zero processing energy with exceptional thermal mass
+Cork Insulation,Roof/Wall Insulation,26.0,0.04,30,Natural bark harvested without felling trees; fire-resistant and acoustic dampening
+Sheep Wool Insulation,Cavity Insulation,21.0,0.038,40,Natural fibre with hygroscopic regulation; sequesters carbon and fully biodegradable
+Mycelium Composite Panel,Wall Cladding,12.0,0.07,20,Grown from fungal mycelium and agricultural waste; fully compostable end-of-life
+Recycled Glass Foam,Roof Insulation,140.0,0.045,50,Cellular glass from 100% post-consumer recycled glass; vapour-impermeable and fire-safe
+Straw Bale,Wall Insulation,12.0,0.052,50,Agricultural straw packed into structural bales; extremely low embodied carbon and good thermal performance
+Bamboo Composite,Flooring/Cladding,98.0,0.17,25,Fast-growing grass processed into high-density panels; rapid carbon regeneration cycle
+Aerogel Blanket,Super Insulation,185.0,0.015,30,Silica-based nano-porous insulation; highest thermal resistance per mm on the market
+Lime Plaster,Interior Finish,200.0,0.80,40,Traditional hydraulic lime coating; re-absorbs CO2 during curing (carbonation process)
+Recycled Brick,Masonry,60.0,0.60,100,Salvaged fired clay bricks; preserves embedded energy and avoids landfill
+Cellulose Insulation,Cavity Insulation,28.0,0.040,35,Shredded post-consumer newspaper treated with borates; high recycled content and low embodied carbon
+Compressed Earth Block (CEB),Masonry,30.0,0.65,80,Machine-compressed unfired soil blocks; minimal processing and fully recyclable
+Phase-Change Gypsum Board,Interior Wall,210.0,0.22,25,Standard gypsum board infused with PCM micro-capsules; stores and releases latent heat for passive cooling
+Flax Fibre Board,Wall Insulation,22.0,0.038,30,Pressed linen fibre panels; agricultural by-product with good breathability
+Seagrass Acoustic Panel,Interior Finish,18.0,0.06,15,Dried marine seagrass woven into acoustic tiles; harvested without soil disturbance
+Transparent Wood Panel,Glazing/Partition,95.0,0.15,20,Delignified timber infused with clear polymer; bio-based alternative to polycarbonate glazing
+Reclaimed Hardwood,Flooring/Structural,5.0,0.18,100,Salvaged old-growth timber; near-zero embodied carbon after accounting for avoided demolition waste
+Standard Concrete (baseline),Structural,410.0,1.65,50,Conventional Portland cement concrete — reference baseline for carbon offset calculations
+Standard Glass Wool,Roof/Wall Insulation,280.0,0.032,25,Conventional mineral wool insulation — reference baseline for thermal performance comparisons
+Ordinary Fired Brick,Masonry,270.0,0.62,75,Standard kiln-fired clay brick — reference baseline for masonry carbon offset calculations
+Conventional Timber Frame,Structural,210.0,0.14,60,Standard sawn softwood framing — reference baseline for structural timber comparisons
