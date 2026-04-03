@@ -1,0 +1,19 @@
+# UI and Dashboard
+streamlit==1.32.0
+
+# AI and LLM Orchestration
+openai>=1.12.0
+python-dotenv>=1.0.1
+langchain>=0.1.0
+
+# Data Science and Analysis
+pandas>=2.1.0
+numpy>=1.26.0
+
+# Engineering and Simulation
+pybuildingenergy>=0.1.4
+scipy>=1.11.0
+
+# Vector Search (for RAG)
+faiss-cpu>=1.7.4
+sentence-transformers>=2.3.0
