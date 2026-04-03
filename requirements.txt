@@ -1,19 +1,21 @@
-# UI and Dashboard
-streamlit==1.32.0
-
-# AI and LLM Orchestration
-openai>=1.12.0
-python-dotenv>=1.0.1
-langchain>=0.1.0
-
-# Data Science and Analysis
-pandas>=2.1.0
-numpy>=1.26.0
-
-# Engineering and Simulation
-pybuildingenergy>=0.1.4
-scipy>=1.11.0
-
-# Vector Search (for RAG)
-faiss-cpu>=1.7.4
-sentence-transformers>=2.3.0
+# ─────────────────────────────────────────────────────────────────────────────
+# EcoPlanner – Python Dependency Manifest
+# Python version : 3.12.12
+# Install        : pip install -r requirements.txt
+# ─────────────────────────────────────────────────────────────────────────────
+ 
+# ── UI Framework ──────────────────────────────────────────────────────────────
+streamlit>=1.35.0                # Dashboard UI, metrics, sidebar, download button
+ 
+# ── AI / LLM Client ───────────────────────────────────────────────────────────
+openai>=1.30.0                   # Oxlo.ai connection (OpenAI-compatible API)
+ 
+# ── Data Handling ─────────────────────────────────────────────────────────────
+pandas>=2.1.0                    # Load & filter materials.csv database
+ 
+# ── Configuration ─────────────────────────────────────────────────────────────
+python-dotenv>=1.0.0             # Read OXLO_API_KEY from .env file
+ 
+# ── Energy Simulation (optional) ──────────────────────────────────────────────
+# If not installed, EcoPlanner falls back to the built-in ISO 13790 model
+pybuildingenergy>=0.3.0          # Advanced building energy simulation engine
