@@ -7,6 +7,10 @@
 
 ## 📸 Interface Gallery
 
+### 🎨 Hero Image
+
+![EcoPlanner Hero Image](/screenshots/Hero_image.png)
+
 | 🖥️ Main Dashboard & Home | 🤖 AI Analysis & Recommendations |
 |:---:|:---:|
 | ![Main Dashboard](/screenshots/Home_page.png) | ![AI Recommendations](/screenshots/P1.png) |
