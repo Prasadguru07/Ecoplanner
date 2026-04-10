@@ -39,7 +39,8 @@ def _get_secret(key: str, default: str = "") -> str:
     try:
         import streamlit as st
         return st.secrets.get(key, os.getenv(key, default))
-    except (ImportError, AttributeError, RuntimeError):
+    except (ImportError, AttributeError, RuntimeError, Exception):
+        # Fallback: use environment variables if Streamlit secrets unavailable
         return os.getenv(key, default)
 
 OXLO_BASE_URL = _get_secret("OXLO_BASE_URL", "https://api.oxlo.ai/v1")
