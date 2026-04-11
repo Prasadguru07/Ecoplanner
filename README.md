@@ -5,8 +5,8 @@
 
 ## 🚀 Live Applications
 
-- **[Main Application (Streamlit) →](https://ecoplanner-oxloai.streamlit.app/)** — Full-featured project with all AI analysis capabilities
-- **[Live Demo (Netlify) →](https://ecoplanneroxlo.netlify.app/)** — Interactive preview
+- **[Main Application (Streamlit) →](https://ecoplanner-oxloai.streamlit.app/)**  Full-featured project with all AI analysis capabilities
+- **[Live Demo (Netlify) →](https://ecoplanneroxlo.netlify.app/)**  Interactive preview
 
 ---
 
