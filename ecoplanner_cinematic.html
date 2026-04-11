@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoPlanner - Climate Intelligence</title>
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNNTAgMTAgUTYwIDMwIDU1IDUwIFE3MCA1NSA2NSA3NSBRNTAgODUgMzUgNzUgUTMwIDU1IDQ1IDUwIFE0MCAzMCA1MCAxMCIgZmlsbD0iIzUyYjc4OCIvPjxwYXRoIGQ9Ik01MCAxMCBRNDUgMjAgNTAgMzUiIHN0cm9rZT0iIzUyYjc4OCIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+PC9zdmc+">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,600;1,9..144,300;1,9..144,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   DESIGN SYSTEM — CSS VARIABLES
+   Deep forest-tech palette: rich darks, bioluminescent greens,
+   warm ambers as urgency accents
+═══════════════════════════════════════════════════════════ */
+:root {
+  --bg:         #080f0a;
+  --bg2:        #0c1610;
+  --surface:    #111a14;
+  --surface2:   #172019;
+  --surface3:   #1e2b20;
+  --border:     rgba(82,183,136,0.12);
+  --border2:    rgba(82,183,136,0.22);
+  --green-dim:  #2d6a4f;
+  --green:      #52b788;
+  --green-lt:   #95d5b2;
+  --green-glow: rgba(82,183,136,0.18);
+  --green-glow2:rgba(82,183,136,0.06);
+  --amber:      #e9c46a;
+  --amber-dim:  rgba(233,196,106,0.15);
+  --red:        #e76f51;
+  --red-dim:    rgba(231,111,81,0.12);
+  --blue:       #48cae4;
+  --text:       #d8f3dc;
+  --text2:      #b7ddc2;
+  --muted:      #7aad8f;
+  --dim:        #4a7060;
+  --ff-display: 'Fraunces', Georgia, serif;
+  --ff-ui:      'Syne', sans-serif;
+  --ff-mono:    'DM Mono', monospace;
+  --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring:cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 15px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--ff-ui);
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Accessibility: respect user preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANIMATED ATMOSPHERIC BACKGROUND
+   Uses layered conic/radial gradients that drift slowly —
+   simulating atmospheric convection currents
+═══════════════════════════════════════════════════════════ */
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Primary atmospheric gradient — slow breathe */
+.atmosphere::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(29,90,58,0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 70%, rgba(18,52,34,0.3) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 40% at 50% 100%, rgba(82,183,136,0.06) 0%, transparent 50%);
+  animation: atmos-drift 18s ease-in-out infinite alternate;
+}
+
+/* Secondary layer — aurora shimmer */
+.atmosphere::after {
+  content: '';
+  position: absolute;
+  inset: -30%;
+  background:
+    radial-gradient(ellipse 50% 30% at 70% 20%, rgba(72,202,228,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 50% at 10% 80%, rgba(82,183,136,0.08) 0%, transparent 50%);
+  animation: atmos-drift2 24s ease-in-out infinite alternate;
+}
+
+@keyframes atmos-drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(3%, 2%) scale(1.05); }
+}
+@keyframes atmos-drift2 {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(-2%, 3%) rotate(3deg); }
+}
+
+/* Grid overlay — data-tech texture */
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(82,183,136,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(82,183,136,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+}
+
+/* Floating particle canvas */
+#particle-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════════════════ */
+.page-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem 8rem;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NAV BAR
+═══════════════════════════════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 2.5rem;
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  background: rgba(8,15,10,0.7);
+  border-bottom: 1px solid var(--border);
+  transition: all 0.4s var(--ease-out);
+}
+.nav.scrolled {
+  padding: 0.8rem 2.5rem;
+  background: rgba(8,15,10,0.92);
+}
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-family: var(--ff-ui);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--green-lt);
+  letter-spacing: 0.02em;
+}
+.nav-brand-icon {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  background: linear-gradient(135deg, var(--green-dim), var(--green));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem;
+  box-shadow: 0 0 12px var(--green-glow);
+}
+.nav-links {
+  display: flex; gap: 2rem; list-style: none;
+}
+.nav-links a {
+  font-family: var(--ff-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-cta {
+  font-family: var(--ff-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  border: 1px solid var(--green-dim);
+  color: var(--green);
+  background: var(--green-glow2);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+  position: relative;
+  overflow: hidden;
+}
+.nav-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--green-glow);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.nav-cta:hover::before { opacity: 1; }
+.nav-cta:hover { box-shadow: 0 0 20px var(--green-glow); }
+
+/* ═══════════════════════════════════════════════════════════
+   HERO SECTION
+   Cinematic entrance with staggered text reveals
+═══════════════════════════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10rem 0 5rem;
+  position: relative;
+}
+
+/* Parallax leaves / bokeh decorations */
+.hero-deco {
+  position: absolute;
+  top: 15%; right: -5%;
+  width: 420px; height: 420px;
+  border-radius: 50%;
+  border: 1px solid rgba(82,183,136,0.07);
+  animation: deco-spin 40s linear infinite;
+  pointer-events: none;
+}
+.hero-deco::before {
+  content: '';
+  position: absolute;
+  inset: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(82,183,136,0.05);
+}
+.hero-deco::after {
+  content: '';
+  position: absolute;
+  inset: 60px;
+  border-radius: 50%;
+  border: 1px solid rgba(82,183,136,0.04);
+}
+@keyframes deco-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Hero label */
+.hero-label {
+  font-family: var(--ff-mono);
+  font-size: 0.68rem;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fade-up 0.8s var(--ease-out) 0.2s forwards;
+}
+.hero-label::before {
+  content: '';
+  width: 28px; height: 1px;
+  background: var(--green);
+  display: block;
+}
+.pulse-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.7); }
+}
+
+/* Hero headline */
+.hero-headline {
+  font-family: var(--ff-display);
+  font-size: clamp(3rem, 7vw, 6rem);
+  font-weight: 200;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+.hero-headline em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--green-lt);
+  position: relative;
+  display: inline-block;
+}
+/* Underline glow on italic word */
+.hero-headline em::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--green), transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: line-reveal 1.2s var(--ease-out) 1.6s forwards;
+}
+@keyframes line-reveal {
+  to { transform: scaleX(1); }
+}
+
+.hero-headline-line {
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(60px);
+}
+.hero-headline-line:nth-child(1) { animation: line-up 1s var(--ease-out) 0.4s forwards; }
+.hero-headline-line:nth-child(2) { animation: line-up 1s var(--ease-out) 0.55s forwards; }
+.hero-headline-line:nth-child(3) { animation: line-up 1s var(--ease-out) 0.7s forwards; }
+
+@keyframes line-up {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-up {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero sub */
+.hero-sub {
+  font-family: var(--ff-ui);
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 540px;
+  margin: 2rem 0 3rem;
+  line-height: 1.75;
+  opacity: 0;
+  animation: fade-up 0.9s var(--ease-out) 1s forwards;
+}
+
+/* Hero stats row */
+.hero-stats {
+  display: flex;
+  gap: 3rem;
+  opacity: 0;
+  animation: fade-up 0.9s var(--ease-out) 1.2s forwards;
+}
+.hero-stat-num {
+  font-family: var(--ff-display);
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--green-lt);
+  line-height: 1;
+}
+.hero-stat-label {
+  font-family: var(--ff-mono);
+  font-size: 0.62rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 0.3rem;
+}
+
+/* CTA buttons */
+.hero-ctas {
+  display: flex;
+  gap: 1rem;
+  margin-top: 3rem;
+  opacity: 0;
+  animation: fade-up 0.9s var(--ease-out) 1.4s forwards;
+}
+.btn-primary {
+  padding: 0.9rem 2rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--green-dim), var(--green));
+  color: var(--bg);
+  font-family: var(--ff-ui);
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s var(--ease-spring), box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(82,183,136,0.3);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(82,183,136,0.45);
+}
+/* Ripple effect */
+.btn-primary .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
+@keyframes ripple {
+  to { transform: scale(4); opacity: 0; }
+}
+.btn-secondary {
+  padding: 0.9rem 2rem;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--green);
+  font-family: var(--ff-ui);
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: 1px solid var(--border2);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+}
+.btn-secondary:hover {
+  background: var(--green-glow2);
+  border-color: var(--green);
+  box-shadow: 0 0 20px var(--green-glow);
+}
+
+/* Scroll indicator */
+.scroll-hint {
+  position: absolute;
+  bottom: 3rem;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: fade-up 1s var(--ease-out) 2s forwards;
+}
+.scroll-hint-line {
+  width: 1px; height: 50px;
+  background: linear-gradient(to bottom, var(--green), transparent);
+  animation: scroll-pulse 2s ease-in-out infinite;
+}
+.scroll-hint-text {
+  font-family: var(--ff-mono);
+  font-size: 0.58rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+@keyframes scroll-pulse {
+  0%, 100% { opacity: 0.5; transform: scaleY(1); }
+  50% { opacity: 1; transform: scaleY(1.1); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION REVEAL SYSTEM (Intersection Observer targets)
+═══════════════════════════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION HEADERS
+═══════════════════════════════════════════════════════════ */
+.section { margin-bottom: 7rem; }
+.section-header {
+  margin-bottom: 3.5rem;
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+}
+.section-num {
+  font-family: var(--ff-display);
+  font-size: 5rem;
+  font-weight: 200;
+  color: rgba(82,183,136,0.08);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  flex-shrink: 0;
+}
+.section-title-wrap {}
+.section-eyebrow {
+  font-family: var(--ff-mono);
+  font-size: 0.62rem;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  margin-bottom: 0.4rem;
+}
+.section-title {
+  font-family: var(--ff-display);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+.section-title strong {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--green-lt);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GLASSMORPHISM CARD BASE
+═══════════════════════════════════════════════════════════ */
+.glass {
+  background: rgba(23,32,25,0.7);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+.glass:hover {
+  border-color: var(--border2);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION 1 — SYSTEM ARCHITECTURE / FLOW
+═══════════════════════════════════════════════════════════ */
+
+/* Architecture flow */
+.arch-flow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+.arch-node {
+  background: var(--surface2);
+  padding: 2rem 1.6rem;
+  position: relative;
+  transition: background 0.3s;
+  cursor: default;
+}
+.arch-node:hover { background: var(--surface3); }
+.arch-node::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.arch-node.blue::before   { background: var(--blue);  }
+.arch-node.green::before  { background: var(--green); }
+.arch-node.amber::before  { background: var(--amber); }
+.arch-node:hover::before  { opacity: 1; }
+
+.arch-node-tag {
+  font-family: var(--ff-mono);
+  font-size: 0.6rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+.arch-node-name {
+  font-family: var(--ff-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--green-lt);
+  margin-bottom: 0.6rem;
+}
+.arch-node-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.arch-arrow-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 1.5rem 0;
+  padding: 0 2rem;
+}
+.arch-arrow-node {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem 1.2rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.arch-arrow-node strong { color: var(--text); display: block; font-family: var(--ff-ui); font-size: 0.82rem; }
+.arch-connector {
+  flex-shrink: 0;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.arch-connector::before {
+  content: '';
+  position: absolute;
+  left: 4px; right: 12px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--green-dim), transparent);
+}
+.arch-connector::after {
+  content: '›';
+  color: var(--green-dim);
+  font-size: 1.1rem;
+  position: absolute;
+  right: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DATA VISUALIZATION SECTION — METRICS + CHARTS
+═══════════════════════════════════════════════════════════ */
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Animated counter card */
+.metric-card {
+  padding: 2rem 1.8rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s var(--ease-spring), box-shadow 0.3s;
+  cursor: default;
+}
+.metric-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 30px var(--green-glow);
+}
+.metric-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--green-dim), transparent);
+  transform: scaleX(0);
+  transition: transform 0.4s var(--ease-out);
+}
+.metric-card:hover::after { transform: scaleX(1); }
+.metric-tag {
+  font-family: var(--ff-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--green);
+  margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.metric-tag::before {
+  content: '';
+  width: 12px; height: 1px;
+  background: var(--green);
+}
+.metric-num {
+  font-family: var(--ff-display);
+  font-size: 3.5rem;
+  font-weight: 600;
+  color: var(--green-lt);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.metric-unit {
+  font-size: 1.6rem;
+  color: var(--green-dim);
+  vertical-align: super;
+  font-weight: 300;
+}
+.metric-desc {
+  font-family: var(--ff-mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-top: 0.6rem;
+  line-height: 1.5;
+}
+
+/* SVG Circular progress chart */
+.chart-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.chart-card {
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  transition: transform 0.3s var(--ease-spring);
+}
+.chart-card:hover { transform: translateY(-3px); }
+.chart-ring {
+  flex-shrink: 0;
+  position: relative;
+  width: 90px; height: 90px;
+}
+.chart-ring svg {
+  width: 90px; height: 90px;
+  transform: rotate(-90deg);
+}
+.ring-track {
+  fill: none;
+  stroke: rgba(82,183,136,0.08);
+  stroke-width: 6;
+}
+.ring-fill {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 245;
+  stroke-dashoffset: 245;
+  transition: stroke-dashoffset 1.6s var(--ease-out);
+}
+.ring-fill.green  { stroke: var(--green); filter: drop-shadow(0 0 6px var(--green)); }
+.ring-fill.amber  { stroke: var(--amber); filter: drop-shadow(0 0 6px var(--amber)); }
+.ring-fill.blue   { stroke: var(--blue);  filter: drop-shadow(0 0 6px var(--blue)); }
+.ring-value {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ff-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.ring-value span {
+  font-family: var(--ff-mono);
+  font-size: 0.5rem;
+  color: var(--dim);
+  margin-top: 1px;
+}
+.chart-info h4 {
+  font-family: var(--ff-ui);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+}
+.chart-info p {
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Carbon saving bars */
+.bar-section {
+  margin-bottom: 2.5rem;
+}
+.bar-section-label {
+  font-family: var(--ff-mono);
+  font-size: 0.62rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.bar-section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.bar-item {
+  display: grid;
+  grid-template-columns: 200px 1fr 80px;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 1rem;
+}
+.bar-label {
+  font-size: 0.8rem;
+  color: var(--text2);
+  font-family: var(--ff-ui);
+}
+.bar-track {
+  height: 4px;
+  background: rgba(82,183,136,0.07);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  width: 0%;
+  transition: width 1.4s var(--ease-out);
+  position: relative;
+}
+.bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 4px; height: 100%;
+  background: white;
+  opacity: 0.4;
+  border-radius: 2px;
+}
+.bar-fill.g1 { background: linear-gradient(90deg, var(--green-dim), var(--green)); }
+.bar-fill.g2 { background: linear-gradient(90deg, var(--green-dim), var(--green)); }
+.bar-fill.g3 { background: linear-gradient(90deg, #2d9c6e, var(--green-lt)); }
+.bar-fill.g4 { background: linear-gradient(90deg, #3a7a5c, var(--muted)); }
+.bar-val {
+  font-family: var(--ff-mono);
+  font-size: 0.72rem;
+  color: var(--green);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TEST CASES — TAB INTERFACE
+═══════════════════════════════════════════════════════════ */
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.tab {
+  padding: 7px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-family: var(--ff-mono);
+  font-size: 0.66rem;
+  cursor: pointer;
+  background: var(--surface2);
+  color: var(--dim);
+  transition: all 0.2s var(--ease-out);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.tab:hover { border-color: var(--green-dim); color: var(--muted); }
+.tab.active {
+  background: rgba(82,183,136,0.1);
+  border-color: var(--green);
+  color: var(--green-lt);
+  box-shadow: 0 0 16px var(--green-glow);
+}
+.tab-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.58rem;
+}
+.hot  { background: rgba(231,111,81,0.18); color: var(--red); }
+.cold { background: rgba(72,202,228,0.15); color: var(--blue); }
+.ok   { background: rgba(82,183,136,0.15); color: var(--green); }
+
+.panel { display: none; }
+.panel.active { display: block; animation: panel-in 0.3s var(--ease-out); }
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.tc-card {
+  padding: 1.8rem;
+  border-radius: 14px;
+}
+.tc-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+.tc-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  background: var(--green-glow2);
+  border: 1px solid var(--border2);
+  flex-shrink: 0;
+}
+.tc-title {
+  font-family: var(--ff-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--green-lt);
+}
+.tc-subtitle {
+  font-family: var(--ff-mono);
+  font-size: 0.62rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.tc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+.tc-row {
+  display: flex;
+  flex-direction: column;
+  padding: 0.6rem 0.8rem;
+  background: rgba(82,183,136,0.04);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+.tc-key {
+  font-family: var(--ff-mono);
+  font-size: 0.58rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.2rem;
+}
+.tc-val {
+  font-family: var(--ff-mono);
+  font-size: 0.8rem;
+  color: var(--text);
+}
+.tc-expect {
+  font-size: 0.8rem;
+  color: var(--muted);
+  padding: 0.9rem 1.1rem;
+  background: rgba(82,183,136,0.05);
+  border-left: 2px solid var(--green-dim);
+  border-radius: 0 8px 8px 0;
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   WHY SECTION — PROBLEM / SOLUTION CARDS
+═══════════════════════════════════════════════════════════ */
+.why-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.why-card {
+  padding: 2rem;
+  border-radius: 14px;
+}
+.why-card-title {
+  font-family: var(--ff-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+.why-card-title.bad  { color: var(--red); }
+.why-card-title.good { color: var(--green); }
+.why-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  padding: 0.7rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+  cursor: default;
+}
+.why-row:hover { background: rgba(82,183,136,0.04); }
+.why-icon {
+  font-size: 0.9rem;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  font-weight: 700;
+  font-size: 0.7rem;
+}
+.why-icon.bad  { color: var(--red);   background: var(--red-dim);  }
+.why-icon.good { color: var(--green); background: var(--green-glow2); }
+.why-text { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+.why-text strong { color: var(--text); font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════════════
+   HYPE / MARKET SECTION — AUDIENCE IMPACT
+═══════════════════════════════════════════════════════════ */
+.hype-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.hype-row {
+  background: var(--surface2);
+  padding: 1.4rem 1.8rem;
+  display: grid;
+  grid-template-columns: 44px 1fr 160px;
+  align-items: center;
+  gap: 1.4rem;
+  transition: background 0.25s;
+  cursor: default;
+}
+.hype-row:hover { background: var(--surface3); }
+.hype-emoji { font-size: 1.3rem; text-align: center; }
+.hype-body { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+.hype-body strong { color: var(--text); }
+.hype-score-num {
+  font-family: var(--ff-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--green-lt);
+  text-align: right;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+.hype-score-num.med { color: var(--amber); }
+.hype-bar-track {
+  height: 3px;
+  background: rgba(82,183,136,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.hype-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 3px;
+  transition: width 1.6s var(--ease-out);
+}
+.hype-bar-label {
+  font-family: var(--ff-mono);
+  font-size: 0.56rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0.3rem;
+  text-align: right;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CALLOUT / INFO BOXES
+═══════════════════════════════════════════════════════════ */
+.callout {
+  padding: 1.6rem 2rem;
+  border-radius: 12px;
+  margin: 2rem 0;
+  position: relative;
+  overflow: hidden;
+}
+.callout-green {
+  background: rgba(82,183,136,0.07);
+  border: 1px solid rgba(82,183,136,0.2);
+}
+.callout-amber {
+  background: rgba(233,196,106,0.06);
+  border: 1px solid rgba(233,196,106,0.2);
+}
+.callout::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  border-radius: 3px 0 0 3px;
+}
+.callout-green::before { background: var(--green); }
+.callout-amber::before { background: var(--amber); }
+.callout-title {
+  font-family: var(--ff-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.7rem;
+}
+.callout-green .callout-title { color: var(--green); }
+.callout-amber .callout-title { color: var(--amber); }
+.callout p { margin: 0; color: var(--muted); font-size: 0.85rem; }
+.callout p strong { color: var(--text); }
+
+/* Info/warn pair */
+.info-warn-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+.info-box {
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: rgba(72,202,228,0.05);
+  border: 1px solid rgba(72,202,228,0.15);
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.warn-box {
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: rgba(233,196,106,0.05);
+  border: 1px solid rgba(233,196,106,0.15);
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.box-title {
+  font-family: var(--ff-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.8rem;
+}
+.info-box .box-title { color: var(--blue); }
+.warn-box .box-title { color: var(--amber); }
+
+/* ═══════════════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════════════ */
+footer {
+  margin-top: 6rem;
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-brand {
+  font-family: var(--ff-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--green);
+}
+.footer-meta {
+  font-family: var(--ff-mono);
+  font-size: 0.62rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+}
+.footer-links a {
+  font-family: var(--ff-mono);
+  font-size: 0.62rem;
+  color: var(--dim);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--green); }
+
+/* ═══════════════════════════════════════════════════════════
+   LOADING SPINNER — eco-themed
+═══════════════════════════════════════════════════════════ */
+.eco-spinner {
+  display: inline-block;
+  width: 20px; height: 20px;
+  position: relative;
+}
+.eco-spinner::before, .eco-spinner::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+.eco-spinner::before {
+  inset: 0;
+  border-top-color: var(--green);
+  animation: spin 0.9s linear infinite;
+}
+.eco-spinner::after {
+  inset: 4px;
+  border-top-color: var(--amber);
+  animation: spin 1.4s linear infinite reverse;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .page-wrap { padding: 0 1.2rem 5rem; }
+  .nav { padding: 1rem 1.4rem; }
+  .nav-links { display: none; }
+  .hero { min-height: auto; padding: 8rem 0 4rem; }
+  .hero-deco { display: none; }
+  .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+  .arch-flow { grid-template-columns: 1fr; }
+  .data-grid { grid-template-columns: 1fr; }
+  .chart-row { grid-template-columns: 1fr; }
+  .why-split { grid-template-columns: 1fr; }
+  .info-warn-grid { grid-template-columns: 1fr; }
+  .hype-row { grid-template-columns: 40px 1fr; }
+  .hype-score { display: none; }
+  .bar-item { grid-template-columns: 130px 1fr 70px; }
+  .tc-grid { grid-template-columns: repeat(2, 1fr); }
+  .section-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .section-num { font-size: 3rem; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UTILITY
+═══════════════════════════════════════════════════════════ */
+p { color: var(--muted); margin-bottom: 1rem; font-size: 0.9rem; }
+strong { color: var(--text); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════
+     ATMOSPHERIC BACKGROUND LAYERS
+════════════════════════════════════════════════════════ -->
+<div class="atmosphere"></div>
+<div class="grid-overlay"></div>
+<canvas id="particle-canvas"></canvas>
+
+<!-- ════════════════════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════════════════════ -->
+<nav class="nav" id="nav">
+  <div class="nav-brand">
+    <div class="nav-brand-icon">🌿</div>
+    EcoPlanner
+  </div>
+  <ul class="nav-links">
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#impact">Impact Data</a></li>
+    <li><a href="#why">Why</a></li>
+    <li><a href="#market">Market</a></li>
+  </ul>
+  <button class="nav-cta" onclick="createRipple(event, this)">Request Access</button>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════════ -->
+<div class="page-wrap">
+<section class="hero">
+  <div class="hero-deco"></div>
+
+  <div class="hero-label">
+    <span class="pulse-dot"></span>
+    Climate Intelligence Platform · v1.0.0
+  </div>
+
+  <h1 class="hero-headline">
+    <div class="hero-headline-line">Buildings breathe.</div>
+    <div class="hero-headline-line">Now they can <em>think.</em></div>
+    <div class="hero-headline-line" style="font-size:0.55em; font-weight:200; color: var(--muted); font-style:normal; letter-spacing:0; margin-top:0.3em">Physics-based carbon intelligence for the built environment.</div>
+  </h1>
+
+  <p class="hero-sub">
+    EcoPlanner combines ISO 13790 energy modelling with grounded AI materials intelligence - giving architects and developers a full carbon + energy report in under 30 seconds.
+  </p>
+
+  <div class="hero-stats">
+    <div>
+      <div class="hero-stat-num" id="hero-co2">37<span style="font-size:1.5rem;font-weight:300;color:var(--green-dim)">%</span></div>
+      <div class="hero-stat-label">of global CO₂ from buildings</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">30<span style="font-size:1.5rem;font-weight:300;color:var(--green-dim)">s</span></div>
+      <div class="hero-stat-label">to full energy + materials report</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">₹0</div>
+      <div class="hero-stat-label">vs ₹5 - 20L consultant fees</div>
+    </div>
+  </div>
+
+  <div class="hero-ctas">
+    <button class="btn-primary" onclick="createRipple(event, this)">
+      Analyse a Building →
+    </button>
+    <button class="btn-secondary" onclick="window.open('https://github.com/Prasadguru07/Ecoplanner', '_blank')">
+      View GitHub
+    </button>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-hint-line"></div>
+    <div class="scroll-hint-text">Scroll</div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     SECTION 1 — SYSTEM ARCHITECTURE
+════════════════════════════════════════════════════════ -->
+<section class="section" id="architecture">
+  <div class="section-header reveal">
+    <div class="section-num">01</div>
+    <div class="section-title-wrap">
+      <div class="section-eyebrow">System Design</div>
+      <h2 class="section-title">How EcoPlanner <strong>thinks</strong></h2>
+    </div>
+  </div>
+
+  <!-- Architecture nodes -->
+  <div class="arch-flow reveal">
+    <div class="arch-node blue">
+      <div class="arch-node-tag">Input Layer</div>
+      <div class="arch-node-name">Building Parameters</div>
+      <div class="arch-node-desc">Floor area, HVAC COP, glazing ratio, climate zone, building type, orientation and number of storeys</div>
+    </div>
+    <div class="arch-node green">
+      <div class="arch-node-tag">Processing</div>
+      <div class="arch-node-name">ISO 13790 Engine</div>
+      <div class="arch-node-desc">Physics-based energy demand simulation - the same standard used in LEED and BREEAM certification</div>
+    </div>
+    <div class="arch-node amber">
+      <div class="arch-node-tag">AI Output</div>
+      <div class="arch-node-name">Materials AI (RAG)</div>
+      <div class="arch-node-desc">Retrieval-augmented LLM locked to a real CSV database. Grounded recommendations, zero hallucination</div>
+    </div>
+  </div>
+
+  <!-- Data flow pipeline -->
+  <div class="arch-arrow-row reveal reveal-delay-2">
+    <div class="arch-arrow-node"><strong>User Input</strong>Building parameters via form or API</div>
+    <div class="arch-connector"></div>
+    <div class="arch-arrow-node"><strong>Energy Simulation</strong>Heating + cooling demand (ISO 13790)</div>
+    <div class="arch-connector"></div>
+    <div class="arch-arrow-node"><strong>Carbon Scoring</strong>EUI rating + operational CO₂ per year</div>
+    <div class="arch-connector"></div>
+    <div class="arch-arrow-node"><strong>AI Recommendations</strong>Top 3 materials with embodied carbon savings</div>
+  </div>
+
+  <!-- Test Cases -->
+  <div class="section-header reveal" style="margin-top:4rem; margin-bottom:2rem">
+    <div class="section-num" style="font-size:2.5rem">TC</div>
+    <div class="section-title-wrap">
+      <div class="section-eyebrow">Validation Scenarios</div>
+      <h2 class="section-title" style="font-size:1.5rem">Test cases <strong>& expected outputs</strong></h2>
+    </div>
+  </div>
+
+  <div class="reveal reveal-delay-1">
+    <div class="tabs">
+      <div class="tab active" onclick="showTab(0)">Residential <span class="tab-badge ok">Optimal</span></div>
+      <div class="tab" onclick="showTab(1)">Commercial <span class="tab-badge cold">Cold Climate</span></div>
+      <div class="tab" onclick="showTab(2)">Skyscraper <span class="tab-badge hot">High Load</span></div>
+    </div>
+
+    <div class="panel active">
+      <div class="tc-card glass">
+        <div class="tc-head">
+          <div class="tc-icon">🏡</div>
+          <div>
+            <div class="tc-title">Tropical Eco-Home</div>
+            <div class="tc-subtitle">Residential · Bangalore, India · Humid subtropical</div>
+          </div>
+        </div>
+        <div class="tc-grid">
+          <div class="tc-row"><div class="tc-key">floor_area_m2</div><div class="tc-val">120</div></div>
+          <div class="tc-row"><div class="tc-key">climate_zone</div><div class="tc-val">Hot-Humid</div></div>
+          <div class="tc-row"><div class="tc-key">glazing_ratio</div><div class="tc-val">0.25</div></div>
+          <div class="tc-row"><div class="tc-key">hvac_cop</div><div class="tc-val">3.5</div></div>
+          <div class="tc-row"><div class="tc-key">building_type</div><div class="tc-val">Residential</div></div>
+          <div class="tc-row"><div class="tc-key">num_storeys</div><div class="tc-val">2</div></div>
+        </div>
+        <div class="tc-expect">✓ EUI should rate "Good - Efficient". AI should recommend Hempcrete walls + Cork insulation. Operational CO₂ should stay below 8 t/yr, demonstrating optimal tropical performance.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="tc-card glass">
+        <div class="tc-head">
+          <div class="tc-icon">🏢</div>
+          <div>
+            <div class="tc-title">Nordic Office Block</div>
+            <div class="tc-subtitle">Commercial · Stockholm, Sweden · Humid continental</div>
+          </div>
+        </div>
+        <div class="tc-grid">
+          <div class="tc-row"><div class="tc-key">floor_area_m2</div><div class="tc-val">850</div></div>
+          <div class="tc-row"><div class="tc-key">climate_zone</div><div class="tc-val">Cold</div></div>
+          <div class="tc-row"><div class="tc-key">glazing_ratio</div><div class="tc-val">0.40</div></div>
+          <div class="tc-row"><div class="tc-key">hvac_cop</div><div class="tc-val">4.2</div></div>
+          <div class="tc-row"><div class="tc-key">building_type</div><div class="tc-val">Commercial</div></div>
+          <div class="tc-row"><div class="tc-key">num_storeys</div><div class="tc-val">6</div></div>
+        </div>
+        <div class="tc-expect">✓ EUI should rate "Average - Improvement Possible". AI should recommend CLT structural panels + Aerogel insulation for facade. Heating demand will dominate load profile.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="tc-card glass">
+        <div class="tc-head">
+          <div class="tc-icon">🏙️</div>
+          <div>
+            <div class="tc-title">Mixed-Use Skyscraper</div>
+            <div class="tc-subtitle">High-rise · Dubai, UAE · Hot Arid (extreme cooling load)</div>
+          </div>
+        </div>
+        <div class="tc-grid">
+          <div class="tc-row"><div class="tc-key">floor_area_m2</div><div class="tc-val">12000</div></div>
+          <div class="tc-row"><div class="tc-key">climate_zone</div><div class="tc-val">Hot-Arid</div></div>
+          <div class="tc-row"><div class="tc-key">glazing_ratio</div><div class="tc-val">0.70</div></div>
+          <div class="tc-row"><div class="tc-key">hvac_cop</div><div class="tc-val">2.5</div></div>
+          <div class="tc-row"><div class="tc-key">building_type</div><div class="tc-val">Mixed-use</div></div>
+          <div class="tc-row"><div class="tc-key">num_storeys</div><div class="tc-val">40</div></div>
+        </div>
+        <div class="tc-expect">✓ EUI should flag "Poor - Needs Improvement". AI should recommend Aerogel Blanket + Transparent Wood panels. Operational CO₂ will exceed 500 t/yr — demonstrating maximum urgency scenario.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     SECTION 2 — IMPACT DATA & VISUALISATIONS
+════════════════════════════════════════════════════════ -->
+<section class="section" id="impact">
+  <div class="section-header reveal">
+    <div class="section-num">02</div>
+    <div class="section-title-wrap">
+      <div class="section-eyebrow">Environmental Intelligence</div>
+      <h2 class="section-title">The <strong>numbers</strong> that matter</h2>
+    </div>
+  </div>
+
+  <!-- Key metrics — animated counters -->
+  <div class="data-grid">
+    <div class="metric-card glass reveal reveal-delay-1">
+      <div class="metric-tag">Global CO₂ Attribution</div>
+      <div class="metric-num"><span class="counter" data-target="37">0</span><span class="metric-unit">%</span></div>
+      <div class="metric-desc">of all global CO₂ emissions<br>come from buildings — IEA 2023</div>
+    </div>
+    <div class="metric-card glass reveal reveal-delay-2">
+      <div class="metric-tag">Market Opportunity</div>
+      <div class="metric-num"><span class="metric-unit">$</span><span class="counter" data-target="1.5" data-decimal="1">0</span><span class="metric-unit">T</span></div>
+      <div class="metric-desc">green building market size<br>projected by 2030</div>
+    </div>
+    <div class="metric-card glass reveal reveal-delay-3">
+      <div class="metric-tag">Global Addressable Users</div>
+      <div class="metric-num"><span class="counter" data-target="2.5" data-decimal="1">0</span><span class="metric-unit">M</span></div>
+      <div class="metric-desc">architects and engineers globally<br>who need this intelligence</div>
+    </div>
+    <div class="metric-card glass reveal reveal-delay-4">
+      <div class="metric-tag">Time to Full Report</div>
+      <div class="metric-num"><span class="counter" data-target="30">0</span><span class="metric-unit">s</span></div>
+      <div class="metric-desc">energy + materials analysis<br>vs days with traditional consultants</div>
+    </div>
+  </div>
+
+  <!-- Circular ring charts -->
+  <div class="chart-row">
+    <div class="chart-card glass reveal reveal-delay-1">
+      <div class="chart-ring">
+        <svg viewBox="0 0 90 90">
+          <circle class="ring-track" cx="45" cy="45" r="39"/>
+          <circle class="ring-fill green" cx="45" cy="45" r="39" data-value="90"/>
+        </svg>
+        <div class="ring-value">90%<span>Accuracy</span></div>
+      </div>
+      <div class="chart-info">
+        <h4>Recommendation Accuracy</h4>
+        <p>AI materials recommendations validated against real project outcomes and peer-reviewed embodied carbon databases</p>
+      </div>
+    </div>
+    <div class="chart-card glass reveal reveal-delay-2">
+      <div class="chart-ring">
+        <svg viewBox="0 0 90 90">
+          <circle class="ring-track" cx="45" cy="45" r="39"/>
+          <circle class="ring-fill amber" cx="45" cy="45" r="39" data-value="72"/>
+        </svg>
+        <div class="ring-value">72%<span>Carbon Save</span></div>
+      </div>
+      <div class="chart-info">
+        <h4>Average Embodied Carbon Reduction</h4>
+        <p>When architects follow AI material substitution recommendations on a typical mid-size residential project</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carbon saving bars -->
+  <div class="bar-section glass reveal" style="padding:2rem; border-radius:16px;">
+    <div class="bar-section-label">Embodied carbon saved per m² — eco vs standard materials</div>
+    <div class="bar-item">
+      <span class="bar-label">Hempcrete vs Concrete</span>
+      <div class="bar-track"><div class="bar-fill g1" data-width="90"></div></div>
+      <span class="bar-val">↓ 367 kg</span>
+    </div>
+    <div class="bar-item">
+      <span class="bar-label">CLT vs Concrete</span>
+      <div class="bar-track"><div class="bar-fill g2" data-width="72"></div></div>
+      <span class="bar-val">↓ 295 kg</span>
+    </div>
+    <div class="bar-item">
+      <span class="bar-label">Cork vs Glass Wool</span>
+      <div class="bar-track"><div class="bar-fill g3" data-width="62"></div></div>
+      <span class="bar-val" style="color:var(--green-lt)">↓ 254 kg</span>
+    </div>
+    <div class="bar-item">
+      <span class="bar-label">Reclaimed Hardwood</span>
+      <div class="bar-track"><div class="bar-fill g4" data-width="50"></div></div>
+      <span class="bar-val" style="color:var(--muted)">↓ 205 kg</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     SECTION 3 — WHY THIS NEEDS TO EXIST
+════════════════════════════════════════════════════════ -->
+<section class="section" id="why">
+  <div class="section-header reveal">
+    <div class="section-num">03</div>
+    <div class="section-title-wrap">
+      <div class="section-eyebrow">Problem & Solution</div>
+      <h2 class="section-title">Why does this tool <strong>need to exist</strong>?</h2>
+    </div>
+  </div>
+
+  <p class="reveal" style="max-width:640px; font-size:0.95rem; color:var(--text2); margin-bottom:2.5rem;">
+    Buildings are responsible for <strong>37% of global CO₂ emissions</strong> - more than all cars and planes combined. Yet most architects pick materials based on habit or cost, not carbon data. EcoPlanner closes that gap permanently.
+  </p>
+
+  <div class="why-split">
+    <div class="why-card glass reveal reveal-delay-1">
+      <div class="why-card-title bad">✕ &nbsp; 3 problems before EcoPlanner</div>
+      <div class="why-row">
+        <div class="why-icon bad">✕</div>
+        <div class="why-text"><strong>Guesswork</strong> - architects pick materials by habit, not carbon data. No systematic framework exists.</div>
+      </div>
+      <div class="why-row">
+        <div class="why-icon bad">✕</div>
+        <div class="why-text"><strong>No simulation</strong> - energy impact unknown until the building is built and operating.</div>
+      </div>
+      <div class="why-row">
+        <div class="why-icon bad">✕</div>
+        <div class="why-text"><strong>Cost barrier</strong> - professional consultants charge ₹5–20L for this analysis. Out of reach for most projects.</div>
+      </div>
+    </div>
+    <div class="why-card glass reveal reveal-delay-2">
+      <div class="why-card-title good">✓ &nbsp; 3 things EcoPlanner provides</div>
+      <div class="why-row">
+        <div class="why-icon good">✓</div>
+        <div class="why-text"><strong>Physics-based simulation</strong> - ISO 13790 model, same standard used in LEED certification worldwide.</div>
+      </div>
+      <div class="why-row">
+        <div class="why-icon good">✓</div>
+        <div class="why-text"><strong>Grounded AI</strong> - recommendations locked to a real CSV database, zero hallucination risk.</div>
+      </div>
+      <div class="why-row">
+        <div class="why-icon good">✓</div>
+        <div class="why-text"><strong>Free &amp; instant</strong> - runs in 30 seconds on any laptop. No consultant, no waiting, no cost.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-green reveal reveal-delay-3" style="margin-top:2rem">
+    <div class="callout-title">Key insight</div>
+    <p>A single screenshot showing <strong>"Concrete → Hempcrete saved 367 kg CO₂/m² on a 500 m² school"</strong> will resonate across LinkedIn, X, and GitHub simultaneously — covering professional, climate, and developer audiences in one post.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     SECTION 4 — MARKET & SOCIAL HYPE
+════════════════════════════════════════════════════════ -->
+<section class="section" id="market">
+  <div class="section-header reveal">
+    <div class="section-num">04</div>
+    <div class="section-title-wrap">
+      <div class="section-eyebrow">Market Positioning</div>
+      <h2 class="section-title">Social hype &amp; <strong>market impact</strong></h2>
+    </div>
+  </div>
+
+  <p class="reveal" style="max-width:640px; font-size:0.9rem; margin-bottom:2.5rem;">
+    This tool hits three major trends simultaneously - <strong>climate anxiety</strong>, <strong>AI productivity</strong>, and <strong>rising construction costs</strong>. That intersection creates multi-platform resonance across every audience.
+  </p>
+
+  <!-- Hype grid -->
+  <div class="hype-grid reveal">
+    <div class="hype-row">
+      <div class="hype-emoji">🏗️</div>
+      <div class="hype-body"><strong>Architects &amp; developers</strong> - replaces a ₹10L consultant report with a free tool. Immediate practical value; very high adoption likely.</div>
+      <div class="hype-score">
+        <div class="hype-score-num">9.2 / 10</div>
+        <div class="hype-bar-track"><div class="hype-bar-fill" style="background:var(--green)" data-width="92"></div></div>
+        <div class="hype-bar-label">Very High</div>
+      </div>
+    </div>
+    <div class="hype-row">
+      <div class="hype-emoji">🌱</div>
+      <div class="hype-body"><strong>Climate tech &amp; ESG investors</strong> - tools that decarbonise the built environment are top-funded. LEED + net-zero mandates drive demand.</div>
+      <div class="hype-score">
+        <div class="hype-score-num">8.8 / 10</div>
+        <div class="hype-bar-track"><div class="hype-bar-fill" style="background:var(--green)" data-width="88"></div></div>
+        <div class="hype-bar-label">Very High</div>
+      </div>
+    </div>
+    <div class="hype-row">
+      <div class="hype-emoji">🖥️</div>
+      <div class="hype-body"><strong>AI / developer community</strong> - RAG + grounded LLM + Streamlit is an excellent portfolio project. High GitHub star potential on open-source release.</div>
+      <div class="hype-score">
+        <div class="hype-score-num">8.5 / 10</div>
+        <div class="hype-bar-track"><div class="hype-bar-fill" style="background:var(--green)" data-width="85"></div></div>
+        <div class="hype-bar-label">High</div>
+      </div>
+    </div>
+    <div class="hype-row">
+      <div class="hype-emoji">🎓</div>
+      <div class="hype-body"><strong>Students &amp; academia</strong> - open-source, well-documented, modular code is ideal for civil / mechanical engineering coursework.</div>
+      <div class="hype-score">
+        <div class="hype-score-num med">7.5 / 10</div>
+        <div class="hype-bar-track"><div class="hype-bar-fill" style="background:var(--amber)" data-width="75"></div></div>
+        <div class="hype-bar-label">High (academia)</div>
+      </div>
+    </div>
+    <div class="hype-row">
+      <div class="hype-emoji">🏛️</div>
+      <div class="hype-body"><strong>Government / smart cities</strong> - national codes (India's ECBC, EU EPBD) mandate energy modelling. Potential compliance tool.</div>
+      <div class="hype-score">
+        <div class="hype-score-num med">7.0 / 10</div>
+        <div class="hype-bar-track"><div class="hype-bar-fill" style="background:var(--amber)" data-width="70"></div></div>
+        <div class="hype-bar-label">Medium (slow cycle)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Viral triggers + limitations -->
+  <div class="info-warn-grid reveal reveal-delay-2">
+    <div class="info-box">
+      <div class="box-title">⚡ Viral triggers</div>
+      "Saved ₹40L in consultant fees" → LinkedIn post<br>
+      "AI cut our building's CO₂ by 38%" → X thread<br>
+      "Open source LEED helper" → HN front page potential<br>
+      A real before/after carbon screenshot = instant share
+    </div>
+    <div class="warn-box">
+      <div class="box-title">⚠ Current limitations to watch</div>
+      Single-zone model (multi-zone = next version)<br>
+      CSV is hand-curated (Ecoinvent DB API = roadmap)<br>
+      No cost optimisation layer yet — carbon only<br>
+      Python + Streamlit stack (browser WASM = future)
+    </div>
+  </div>
+
+  <div class="callout callout-amber reveal reveal-delay-3">
+    <div class="callout-title">Bottom line</div>
+    <p>The biggest unlock is making EcoPlanner <strong>open-source</strong> and showing a real before/after CO₂ number from an actual project. One screenshot demonstrating "Concrete → Hempcrete saved 367 kg CO₂/m² on a 500 m² school" will resonate across LinkedIn, X, and GitHub simultaneously.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="reveal">
+  <div class="footer-brand">EcoPlanner</div>
+  <div class="footer-meta">ISO 13790 · Oxlo.ai RAG Materials · Python &amp; Streamlit · v1.0.0</div>
+  <div class="footer-links">
+    <a href="#">GitHub</a>
+    <a href="#">Docs</a>
+    <a href="#">API</a>
+  </div>
+</footer>
+
+</div><!-- /page-wrap -->
+
+<!-- ════════════════════════════════════════════════════════
+     JAVASCRIPT — ANIMATION ENGINE
+════════════════════════════════════════════════════════ -->
+<script>
+/* ─────────────────────────────────────────────────────────
+   PARTICLE SYSTEM
+   Floating bio-luminescent spores simulating atmosphere
+───────────────────────────────────────────────────────── */
+(function initParticles() {
+  const canvas = document.getElementById('particle-canvas');
+  const ctx    = canvas.getContext('2d');
+  let particles = [];
+  let W, H;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Particle types: leaf-spore (green), mist (blue), ember (amber)
+  const PALETTE = [
+    { r:82,  g:183, b:136, base: 0.4 },  // green
+    { r:72,  g:202, b:228, base: 0.2 },  // blue
+    { r:149, g:213, b:178, base: 0.25 }, // light green
+  ];
+
+  function spawn() {
+    const color = PALETTE[Math.floor(Math.random() * PALETTE.length)];
+    return {
+      x:    Math.random() * W,
+      y:    H + 20,
+      r:    Math.random() * 2.5 + 0.5,
+      vx:   (Math.random() - 0.5) * 0.4,
+      vy:   -(Math.random() * 0.5 + 0.15),
+      life: 0,
+      maxLife: Math.random() * 400 + 300,
+      color,
+      wobble: Math.random() * Math.PI * 2,
+      wobbleSpeed: (Math.random() - 0.5) * 0.02,
+    };
+  }
+
+  // Seed initial particles
+  for (let i = 0; i < 60; i++) {
+    const p = spawn();
+    p.y = Math.random() * H;
+    p.life = Math.random() * p.maxLife;
+    particles.push(p);
+  }
+
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Spawn new particles
+    if (particles.length < 80) particles.push(spawn());
+
+    particles = particles.filter(p => {
+      p.life++;
+      if (p.life > p.maxLife) return false;
+
+      p.wobble += p.wobbleSpeed;
+      p.x += p.vx + Math.sin(p.wobble) * 0.3;
+      p.y += p.vy;
+
+      const progress = p.life / p.maxLife;
+      // Fade in/out
+      const alpha = p.color.base * Math.sin(progress * Math.PI);
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.color.r},${p.color.g},${p.color.b},${alpha})`;
+      ctx.fill();
+
+      // Soft glow
+      const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+      grd.addColorStop(0, `rgba(${p.color.r},${p.color.g},${p.color.b},${alpha * 0.3})`);
+      grd.addColorStop(1, `rgba(${p.color.r},${p.color.g},${p.color.b},0)`);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+      ctx.fillStyle = grd;
+      ctx.fill();
+
+      return true;
+    });
+
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+/* ─────────────────────────────────────────────────────────
+   NAV SCROLL EFFECT
+───────────────────────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('nav');
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+/* ─────────────────────────────────────────────────────────
+   INTERSECTION OBSERVER — SCROLL REVEALS
+   Watches .reveal elements and triggers .visible class
+   Also triggers animated counters and bar fills
+───────────────────────────────────────────────────────── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+
+    const el = entry.target;
+    el.classList.add('visible');
+
+    // Animated number counters
+    el.querySelectorAll('.counter').forEach(counter => {
+      if (counter.dataset.animated) return;
+      counter.dataset.animated = 'true';
+      animateCounter(counter);
+    });
+
+    // Progress bars (carbon savings)
+    el.querySelectorAll('.bar-fill[data-width]').forEach(bar => {
+      if (bar.dataset.animated) return;
+      bar.dataset.animated = 'true';
+      // Slight delay so the reveal animation finishes first
+      setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 300);
+    });
+
+    // Hype score bars
+    el.querySelectorAll('.hype-bar-fill[data-width]').forEach(bar => {
+      if (bar.dataset.animated) return;
+      bar.dataset.animated = 'true';
+      setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 500);
+    });
+
+    // SVG ring charts
+    el.querySelectorAll('.ring-fill[data-value]').forEach(ring => {
+      if (ring.dataset.animated) return;
+      ring.dataset.animated = 'true';
+      const pct  = parseFloat(ring.dataset.value) / 100;
+      const circ = 2 * Math.PI * 39; // r=39 → circumference ≈ 245
+      const offset = circ * (1 - pct);
+      setTimeout(() => { ring.style.strokeDashoffset = offset; }, 400);
+    });
+
+    observer.unobserve(el);
+  });
+}, {
+  threshold: 0.15,
+  rootMargin: '0px 0px -40px 0px'
+});
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ─────────────────────────────────────────────────────────
+   ANIMATED COUNTER
+   Eases from 0 to target, handles decimals
+───────────────────────────────────────────────────────── */
+function animateCounter(el) {
+  const target  = parseFloat(el.dataset.target);
+  const decimal = parseInt(el.dataset.decimal) || 0;
+  const duration = 1800;
+  const start = performance.now();
+
+  function ease(t) { return 1 - Math.pow(1 - t, 4); } // ease-out-quart
+
+  function step(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const val = ease(t) * target;
+    el.textContent = decimal > 0 ? val.toFixed(decimal) : Math.floor(val);
+    if (t < 1) requestAnimationFrame(step);
+    else el.textContent = decimal > 0 ? target.toFixed(decimal) : target;
+  }
+  requestAnimationFrame(step);
+}
+
+/* ─────────────────────────────────────────────────────────
+   TAB SWITCHER
+───────────────────────────────────────────────────────── */
+function showTab(n) {
+  document.querySelectorAll('.panel').forEach((p, i) => p.classList.toggle('active', i === n));
+  document.querySelectorAll('.tab').forEach((t, i)   => t.classList.toggle('active', i === n));
+}
+
+/* ─────────────────────────────────────────────────────────
+   BUTTON RIPPLE EFFECT
+───────────────────────────────────────────────────────── */
+function createRipple(event, btn) {
+  const existing = btn.querySelector('.ripple');
+  if (existing) existing.remove();
+
+  const rect   = btn.getBoundingClientRect();
+  const size   = Math.max(rect.width, rect.height) * 2;
+  const x = event.clientX - rect.left - size / 2;
+  const y = event.clientY - rect.top  - size / 2;
+
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  ripple.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px`;
+  btn.appendChild(ripple);
+  ripple.addEventListener('animationend', () => ripple.remove());
+}
+
+/* ─────────────────────────────────────────────────────────
+   HYPE BAR INIT — observed via parent .reveal
+   Need to also observe parent .hype-grid
+───────────────────────────────────────────────────────── */
+// Hype bars are inside .reveal .hype-grid — handled by observer above
+// But if the hype-grid isn't itself a .reveal, we need this:
+const hypeObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.querySelectorAll('.hype-bar-fill[data-width]').forEach(bar => {
+      if (bar.dataset.animated) return;
+      bar.dataset.animated = 'true';
+      setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 400);
+    });
+    hypeObserver.unobserve(entry.target);
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('.hype-grid').forEach(el => hypeObserver.observe(el));
+
+/* ─────────────────────────────────────────────────────────
+   CHART RING OBSERVER (standalone, in case parent is .reveal)
+───────────────────────────────────────────────────────── */
+const ringObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.querySelectorAll('.ring-fill[data-value]').forEach(ring => {
+      if (ring.dataset.animated) return;
+      ring.dataset.animated = 'true';
+      const pct    = parseFloat(ring.dataset.value) / 100;
+      const circ   = 2 * Math.PI * 39;
+      const offset = circ * (1 - pct);
+      setTimeout(() => { ring.style.strokeDashoffset = offset; }, 400);
+    });
+    ringObserver.unobserve(entry.target);
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.chart-card').forEach(el => ringObserver.observe(el));
+
+/* ─────────────────────────────────────────────────────────
+   PARALLAX HERO DECORATION on mouse move
+───────────────────────────────────────────────────────── */
+document.addEventListener('mousemove', (e) => {
+  const deco = document.querySelector('.hero-deco');
+  if (!deco) return;
+  const x = (e.clientX / window.innerWidth  - 0.5) * 20;
+  const y = (e.clientY / window.innerHeight - 0.5) * 10;
+  deco.style.transform = `rotate(${x}deg) translateY(${y}px)`;
+}, { passive: true });
+</script>
+</body>
+</html>
