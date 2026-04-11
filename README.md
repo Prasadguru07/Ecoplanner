@@ -3,6 +3,11 @@
 > **AI-powered energy analysis and eco-material recommendations for sustainable architecture.**
 > Built with Python, Streamlit, and Oxlo.ai.
 
+## 🚀 Live Applications
+
+- **[Main Application (Streamlit) →](https://ecoplanner-oxloai.streamlit.app/)** — Full-featured project with all AI analysis capabilities
+- **[Live Demo (Netlify) →](https://ecoplanneroxlo.netlify.app/)** — Interactive preview
+
 ---
 
 ## 📸 Interface Gallery
